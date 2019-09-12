@@ -1,0 +1,23 @@
+<snippet>
+	<content><![CDATA[
+public function load(\$id = null, \$mode = 'LOAD_ALL', \$params = array()){
+	if(\$mode != 'LOAD_ALL'){
+		switch (\$mode) {
+			case 'LOADBY_ID':
+				\$this->db->where(\$this->_id,\$id);
+				break;
+			default:
+				break;
+		}
+	}
+	\$q = \$this->db->get(\$this->_table);
+	\$result = \$this->general_model->getResult();
+	\$result['data'] = \$q;
+	return \$result;
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>loadData</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

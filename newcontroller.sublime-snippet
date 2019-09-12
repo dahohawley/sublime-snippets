@@ -1,0 +1,22 @@
+<snippet>
+	<content><![CDATA[
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+include_once APPPATH . '/modules/core/controllers/Controller.php';
+
+class ${1:${TM_FILENAME/(.+)..+..+/$1/}} extends Controller{
+	public function __construct(){
+		parent::__construct();
+
+	}
+	public function index(){
+		${2://Code Here......}
+	}
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>zx</tabTrigger> 
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

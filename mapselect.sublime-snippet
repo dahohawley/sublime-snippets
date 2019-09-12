@@ -1,0 +1,16 @@
+<snippet>
+	<content><![CDATA[
+\$this->map('${1:columnName}','${2:columnAlias}', 
+	array(
+		'type' => 'select' , 
+		'id' => '${3:column_id}' , 
+		'name' => '${4:columnIdentifier}' , 
+		'model' => '${5:modelName}', 
+	),'select2','','required'
+),
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>mapselect</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

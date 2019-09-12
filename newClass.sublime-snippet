@@ -1,0 +1,67 @@
+	<snippet>
+	<content><![CDATA[
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+include_once APPPATH . '/modules/core/controllers/Controller.php';
+
+class ${1:${TM_FILENAME/(.+)..+..+/$1/}} extends Controller{
+	public function __construct(){
+		parent::__construct();
+		\$this->load->model('${1:${TM_FILENAME/(.+)..+..+/$1/}}_model','model');
+	}
+	
+	public function save(){
+		\$params = \$this->input->post();
+		\$column = \$this->model->_column;
+
+		foreach (\$column as \$column) {
+			if(\$column['inputClass'] == 'rupiah'){
+				\$params[\$column['columnName']] = format_angka($params[\$column['columnName']]);
+			}
+		}
+
+		\$this->form_validation->set_data(\$params);
+
+		foreach(\$column as \$column){
+			if(\$column['validation']){
+				\$alias = \$column['alias'] ? \$column['alias'] : ucwords( str_replace('_',' ',\$column['columnName']) ) ;
+				\$this->form_validation->set_rules(\$column['columnName'],\$alias,\$validation);
+			}
+		}
+		if (\$this->form_validation->run() == TRUE) {
+			\$result = \$this->model->save($params);
+		} else {
+			\$result['status'] = false;
+			\$result['info'] = validation_errors();
+		}
+		echo json_encode(\$result);
+	}
+	public function delete(){
+		\$params = \$this->input->post();
+		\$id = @\$params['id'];
+		\$result = \$this->model->delete(\$id);
+		echo json_encode(\$result);
+	}
+	public function loadList(){
+		\$post = \$this->input->post();
+		\$data = \$this->model->load(null,'LOAD_ALL',\$post);
+
+		if(isset(\$post['current'])){
+			\$result = array(
+				'current' => \$post['current'],
+				'rowCount' => \$post['rowCount'],
+				'rows' => \$data['data']['rows']->result(),
+				'total' => \$data['data']['totalRows']);
+		}else{
+			\$result = \$data['data']['rows']->result();
+		}
+		echo json_encode(\$result);
+	}
+}	
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>nc</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

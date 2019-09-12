@@ -1,0 +1,187 @@
+<snippet>
+	<content><![CDATA[
+<?php
+class ${0:${TM_FILENAME/(.+)..+..+/$1/}} extends CI_MODEL{
+	protected \$_table = '${1:table_name}';
+	protected \$_key;
+	public \$_column;
+	/* set this line to false if ID of table using custom prefix. */
+	protected \$_autoincrement = true;
+	/* set this line to false if ID of table using custom prefix. */
+
+	public function __construct(){
+		/*
+			MAPPING PARAMETERS : 
+			\$columnName , \$alias , \$inputType , \$inputClass , \$dataFormatting
+			
+			==================================================================
+
+			IF INPUT IS FROM OTHER MODEL
+			\$inputType MUST BE AN ARRAY
+
+			array(
+				'type' => 'select' , // TYPE OF INPUT
+				'id' => 'id_pegawai' , // ID OF OTHER MODEL COLUMN
+				'name' => 'nama_pegawai' , // DATA WILL BE DISPLAYED
+				'model' => 'dokter/model_dokter', // namespace of model // set to null if data is static
+
+				'data' => array(
+					array(
+						'value' => 'Laki Laki',
+						'label' => 'Laki Laki'),
+					array(
+						'value' => 'Perempuan',
+						'label' => 'Perempuan')
+				),  // only used for static data.
+			);
+		*/
+		parent::__construct();
+		\$CI =& get_instance();
+		\$CI->load->model('general_model');
+		\$this->_key = \$CI->general_model->getKeyColoumn(\$this->_table);
+
+		\$this->_column = array(
+			${2:\$this->map(${3:column_name}),}
+		);
+	}
+	/* Mapp */
+	public function map(\$columnName = '',\$alias = null,\$inputType = 'text' , \$inputClass ='',\$dataFormatting = '',\$validation = null){
+		if(is_array(\$inputType)){
+			\$type = \$inputType['type'];
+			\$id = \$inputType['id'];
+			\$name = \$inputType['name'];
+			// Load data into selected model
+				if(isset(\$inputType['model'])){
+					\$aliasModel = str_replace('/','',strstr(\$inputType['model'],'/'));
+					\$this->load->model(\$inputType['model'],\$aliasModel);
+					\$data = \$this->\$aliasModel->load()['data']['rows']->result();
+				}else{
+					\$data = \$this->convertArrayToObject(\$inputType['data']);
+				}
+			\$inputType['data'] = \$data;
+		}
+		return array(
+			'columnName' => \$columnName,
+			'alias' => \$alias,
+			'inputType' => \$inputType,
+			'inputClass' => \$inputClass,
+			'dataFormatting' => '',
+			'validation' => \$validation
+		);
+	}
+	/* Mapp */
+
+	public function save(\$params){
+		if( isset(\$params[\$this->_key]) && !empty(\$params[\$this->_key]) ){
+
+			\$id = \$params[\$this->_key];
+
+			unset(\$params[\$this->_key]);
+
+			\$this->db->set(\$params);
+			\$this->db->where(\$this->_key,\$id);
+
+			if(\$this->db->update(\$this->_table)){
+				\$result['status'] = true;
+				\$result['info'] = 'Berhasil Mengupdate data.';
+			}else{
+				\$result['status'] = false;
+				\$result['info'] = 'Gagal Mengupdate Data';
+			}
+		}else{
+			// auto increment ?
+			if(\$this->_autoincrement){
+				unset(\$params[\$this->_key]);
+			}else{
+				\$CI =& get_instance();
+				\$CI->load->model('general_model');
+				\$params[\$this->_key] = \$CI->general_model->get_new_id_item(\$this->_table);
+			}
+
+			//insert data
+			if(\$this->db->insert(\$this->_table,\$params)){
+				\$result['status'] = true;
+				\$result['info'] = 'Berhasil Mengupdate data.';
+			}else{
+				\$result['status'] = false;
+				\$result['info'] = 'Berhasil Mengupdate data.';
+			}
+		}
+		return \$result;
+	}
+
+	public function load(\$id='',\$mode = 'LOAD_ALL',\$params = array()){
+
+		if(\$mode != 'LOAD_ALL'){
+			switch (\$mode) {
+				case 'LOADBY_ID':
+					\$this->db->where(\$this->_key,\$id);
+					break;
+			}
+		}
+
+		\$countAll = \$this->db->from(\$this->_table)->count_all_results();
+
+		// If Bootgrid 
+			if(isset(\$params['rowCount'])){
+				\$offset = (\$params['current'] - 1) * \$params['rowCount'];
+				\$this->db->limit(\$params['rowCount'],\$offset);
+
+				if(!empty(\$params['searchPhrase'])){
+					foreach (\$this->_column as \$data) {
+						\$this->db->or_like(\$data['columnName'],\$params['searchPhrase']);
+					}
+				}
+
+			}
+		// end if bootgrid
+
+		\$result = array();
+		if(\$data = \$this->db->get(\$this->_table)){
+			// echo \$this->db->last_query();die();	
+			\$result['status'] = true;
+			\$result['info'] = 'Success Loading data';
+			\$result['data'] = array(
+				'rows' => \$data,
+				'totalRows' => \$countAll
+			);
+		}
+		return \$result;
+	}
+
+	public function delete(\$id){
+		\$result = array();
+		try{
+			\$this->db->where(\$this->_key,\$id);
+			if(\$this->db->delete(\$this->_table)){
+				\$result['status'] = true;
+			}else{
+				// \$result['info'] = \$this->db->last_query();
+				\$result['status'] = false;
+			}
+		}catch(\Exception \$ex){
+			// \$result['info'] = \$this->db->last_query();
+			\$result['status'] = false;
+		}
+		return \$result;
+	}
+
+	public function getTable(){
+		return \$this->_table;
+	}
+	public function getKey(){
+		return \$this->_key;
+	}
+	public function convertArrayToObject(\$data){
+		foreach (\$data as \$data2) {
+			\$obj[] =  (object) \$data2;
+		}
+		return \$obj;
+	}
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>nm</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

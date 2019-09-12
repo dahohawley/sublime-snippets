@@ -1,0 +1,9 @@
+<snippet>
+	<content><![CDATA[
+\$this->keuangan_model->insertJurnal(${1:\$no_akun},${2:'d'} ${3:'k'},${4:\$jumlahTransaksi},${5:\$kode_transaksi});
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>insertJurnal</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

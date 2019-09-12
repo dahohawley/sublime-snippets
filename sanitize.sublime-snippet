@@ -1,0 +1,9 @@
+<snippet>
+	<content><![CDATA[
+\$params['${1:kolom}'] = format_angka(\$params['${1:kolom}']); 
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>sanitize</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

@@ -1,0 +1,15 @@
+<snippet>
+	<content><![CDATA[
+
+<?php echo \$this->template->cardOpen('${1:Judul}');?>
+
+<?php echo \$this->template->cardBodyOpen();?>
+
+<?php echo \$this->template->cardBodyClose();?>
+
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>gencard</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

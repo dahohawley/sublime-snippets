@@ -1,0 +1,21 @@
+{
+	"bootstrapped": true,
+	"in_process_packages":
+	[
+	],
+	"installed_packages":
+	[
+		"1337 Color Scheme",
+		"A File Icon",
+		"Acme Color Scheme",
+		"AngularJS",
+		"Browser Refresh",
+		"CodeIgniter Snippets",
+		"Emmet",
+		"FileIcons",
+		"Git",
+		"Package Control",
+		"Path Tools",
+		"PhpArrayConverter"
+	]
+}

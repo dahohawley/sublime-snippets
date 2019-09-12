@@ -1,0 +1,25 @@
+<snippet>
+	<content><![CDATA[
+\$this->form_validation->set_data(\$params);
+
+${1}
+
+
+if (\$this->form_validation->run() == TRUE) {
+	foreach (\$column as \$column) {
+		if(\$column['inputClass'] == 'rupiah'){
+			\$params[\$column['columnName']] = format_angka(\$params[\$column['columnName']]);
+		}
+	}
+	\$result = \$this->model->save(\$params);
+} else {
+	\$result['status'] = false;
+	\$result['info'] = validation_errors();
+}
+echo json_encode(\$result);
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>cvalid</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>
